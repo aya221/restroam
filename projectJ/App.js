@@ -3,7 +3,8 @@ import { FlatList, StyleSheet, Text, View, TextInput, Switch, Button } from 'rea
 import TimeSelectArray from './components/TimeSelectArray';
 import { useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
-import TimeSelect from './components/TimeSelect';
+import TimeSelect from './components/AddToilet';
+import AddToilet from './components/AddToilet';
 
 export default function App() {
   var numberi = 0;
@@ -27,92 +28,7 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.containerTitle}>
-        <Text style={styles.cadre}>
-          Add Toilet
-        </Text>
-      </View>
-
-      <View>
-        <Text style={{ paddingLeft: "2%" }}>
-          Opening hours
-        </Text>
-        <View style={{
-          display: "flex",
-          alignItems: 'center'
-        }}>
-
-        </View>
-        <TimeSelectArray></TimeSelectArray>
-        <Text style={{ padding: "2%" }}>
-          Specify its location
-        </Text>
-        <View>
-          <TextInput style={styles.input}
-            placeholder="Address...">
-          </TextInput>
-        </View>
-        <Text style={{ padding: "2%" }}>
-          Indicate its details
-        </Text>
-        <View style={{
-          display: 'flex',
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          marginLeft: '5%'
-        }}>
-          <View style={styles.cadreS}>
-            <Text>Price</Text>
-            <View style={{
-              display: 'flex',
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              marginLeft: '5%',
-              alignItems: 'center'
-            }}>
-              <TextInput style={styles.input}
-                placeholder="0,00"
-                onChangeText={x => changePrice(x)}>
-              </TextInput>
-              <Text style={{ fontSize: 20, }}>
-                €
-              </Text>
-            </View>
-          </View>
-          <View style={styles.cadreS}>
-            <Text>Handicap access</Text>
-            <Switch
-              trackColor={{ false: "#767577", true: "lightgreen" }}
-              thumbColor={isEnabled ? "#A5AD8B" : "#EAA0B2"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-              style={{
-                margin: '10%',
-                marginLeft: '35%',
-              }}
-            />
-          </View>
-        </View>
-        <Text style={{ padding: 5 }}>
-          Other Details
-        </Text>
-        <TextInput style={styles.inputDescription}
-          multiline={true}
-          placeholder="Insert description in here...">
-
-        </TextInput>
-        <View
-          style={{ margin: 30 }}>
-          <Button
-            title="Submit"
-            onPress={() => console.log('click')}
-          />
-
-        </View>
-      </View>
-    </View >
+    <AddToilet></AddToilet>
   );
 }
 
