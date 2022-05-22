@@ -5,19 +5,19 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const User = require('../models/user');
+const Toilet = require('../models/toilet');
 
 const jsonParser = bodyParser.json();
 
-router.post('/addToilet', jsonParser, (req, res) => {
-    const user = new User({
+router.get('/addToilet', jsonParser, (req, res) => {
+    const toilet = new Toilet({
         _id: new mongoose.Types.ObjectId(),
         address: req.body.address,
         price: req.body.price,
         openingHours: req.body.openingHours,
         handicapAccess: req.body.handicapAccess
     });
-    user
+    toilet
         .save()
         .then(result => {
             console.log(result);

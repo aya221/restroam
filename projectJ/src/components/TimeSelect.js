@@ -68,7 +68,7 @@ export default function TimeSelect(props) {
     }
     return (
         <View style={styles.addInputs}>
-            <Text style={{ minWidth: 100 }}>
+            <Text style={{ minWidth: 70 }}>
                 {props.day}
             </Text>
             <TextInput

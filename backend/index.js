@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require('mongoose');
 const usersRoutes = require('./api/routes/users');
 
+const toiletsRoutes = require('./api/routes/toilets');
+
 const app = new express();
 const port = 3000;
 
@@ -19,12 +21,13 @@ mongoose.connect(
 );
 
 const db = mongoose.connection;
-db.on('error', () => {console.log('ZEBI')});
+db.on('error', () => { console.log('Error') });
 db.once("open", function () {
     console.log("Connected successfully");
 });
 
 app.use('/users', usersRoutes);
+app.use('/toilets', toiletsRoutes);
 
 app.get('/', (req, res) => {
     res.status(500).send('Hello World');

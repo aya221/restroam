@@ -58,6 +58,6 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 15,
     fontSize: 150,
-    minWidth: 430,
+    minWidth: 400,
   },
 });
