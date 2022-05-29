@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { FlatList, StyleSheet, Text, View, TextInput, Switch, Button } from 'react-native';
 import TimeSelectArray from './TimeSelectArray';
 import { useState } from 'react'; import axios from 'axios';
-const baseUrl = 'http://192.168.0.108:3000';
+const baseUrl = 'http://localhost:3000';
 
 export default function AddToilet() {
   var numberi = 0;
@@ -20,18 +20,12 @@ export default function AddToilet() {
   }
 
   const submitData = async function () {
-    await axios({
-      method: 'post',
-      url: `${baseUrl}/toilets/addToilet`,
-      body: JSON.stringify({
-        address: 'test',
-        price: price,
-        openingHours: { a: 'test' },
-        handicapAccess: 'yes'
-      }),
-    }).then((response) => {
-      console.log(response.data);
-    });
+    axios.post(`${baseUrl}/toilets/addToilet`, {
+      address: 'test',
+      price: price,
+      openingHours: JSON.stringify({a:'aaa'}),
+      handicapAccess: 'yes'
+    })
   }
 
   return (

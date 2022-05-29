@@ -9,7 +9,10 @@ const Toilet = require('../models/toilet');
 
 const jsonParser = bodyParser.json();
 
-router.get('/addToilet', jsonParser, (req, res) => {
+const CORS = require('cors');
+router.use(CORS());
+
+router.post('/addToilet', jsonParser, (req, res) => {
     const toilet = new Toilet({
         _id: new mongoose.Types.ObjectId(),
         address: req.body.address,
@@ -17,6 +20,7 @@ router.get('/addToilet', jsonParser, (req, res) => {
         openingHours: req.body.openingHours,
         handicapAccess: req.body.handicapAccess
     });
+    console.log(toilet);
     toilet
         .save()
         .then(result => {
