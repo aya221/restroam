@@ -19,12 +19,18 @@ const TimeSlot = (props) => {
       )
      
       useEffect(() => {
-        
+          let tmp = {
+            start:props.data.start,
+            end:props.data.end,
+            days:[],
+          }
           Object.keys(dayIsChecked).forEach(k => {
-            if(dayIsChecked.k){
-              props.setData(k);
+            if(dayIsChecked[k]){
+              tmp.days.push(k);
             }
           })
+          props.setData(tmp);//juste fama delay fel console log taw ama heya rahou jawha behi w tetbadel fel adtoilet zeda juste setti el wakt w jawek behiu
+          //w aamel fazet el tmp bech matokeech taccedi lel variable el dekhel fel setting okeyyyy :)haya bye
           console.log(props.data);
       
       },[dayIsChecked])

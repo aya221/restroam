@@ -47,7 +47,11 @@ export default function AddToilet({navigation}) {
   const [counter, setCounter] = useState(0);
   
   //let test = [null, null, []]
-  const[test, setTest] = useState([null, null, []])
+  const[test, setTest] = useState({
+    start:'',
+    end:'',
+    days:[]
+  })
   const [hourSlots, setHourSlots] = useState([<TimeSlot data={test}/>])
 
   const MAX_NB_SLOTS = 7;
@@ -93,7 +97,7 @@ export default function AddToilet({navigation}) {
         </Text>
 
         {hourSlots.map(() => {
-          return  <TimeSlot data={setTest}/>
+          return  <TimeSlot setData={setTest} data={test}/>
         }        
         )}
       </View>
