@@ -26,7 +26,7 @@ import Theme from './src/darkMode/Theme';
 import EditToiletScreen from './src/screens/editToilet/EditToiletScreen';
 import EditInfoScreen from './src/screens/editToilet/EditInfoScreen';
 import UploadImage from './src/screens/upload/UploadImage';
-
+import OverviewScreen from './src/screens/RateToilet/OverviewScreen'
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -268,6 +268,17 @@ export default function App() {
               {
                 headerStyle: {
                   backgroundColor: headColor
+                }
+              }
+            }
+          />
+          <Stack.Screen
+            name='Rating Overview'
+            component={OverviewScreen}
+            options={
+              {
+                headerStyle: {
+                  backgroundColor: "#f28d82"
                 }
               }
             }

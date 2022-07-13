@@ -199,9 +199,7 @@ export default function MapScreen({ navigation }) {
                         //title={marker.title}
                         //description={marker.description}
                         onPress={() => markerClick(item, index)}>
-                        <Image source={require('../../../assets/toiletMarker.png')}
-                            style={styles.toiletsAround}
-                            resizeMode="cover" />
+                        <Icon name="toilet" size={25} color={"#f28d82"} />
                     </MapView.Marker>
                 })}{
                     direction
@@ -319,14 +317,13 @@ export default function MapScreen({ navigation }) {
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("Rating",{toilet: marker})
+                                    navigation.navigate("Rating Overview", {toilet: item})
                                 }
                                 }>
                                     <Icon name="pencil-box-multiple" size={25} color={theme.icon} />
                                     <Text style={{
-                                        fontSize: 7.5,
-                                        color: theme.icon
-                                    }}>Review</Text>
+                                        fontSize: 7.5
+                                    }}>Reviews</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     display: 'flex',

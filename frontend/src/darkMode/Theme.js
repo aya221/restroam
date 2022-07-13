@@ -14,14 +14,17 @@ const Theme = {
          day: "gold",
          night: "grey",
          show: "#f28d82",
-         backgroundReports: "#f5f5f5",
+         ackgroundReports: "#f5f5f5",
          reportsChoice: "white",
          check: "#e6697e",
          addMore: "black",
          water: "#a6cbe3",
          bottomBar: "white",
          icon: "#f28d82",
-         drop: "white"
+         drop: "white",
+         titleReview: "black",
+         reviewBorder: "black"
+
      },
     dark:{
         theme: "dark",
@@ -45,7 +48,10 @@ const Theme = {
         water: "#6040bd",
         bottomBar: "#242526",
         icon: "#ccaa55",
-        drop: "#ccaa55"
+        drop: "#ccaa55",
+        titleReview: "#ccaa55",
+        reviewBorder: "grey"
+
     },
 };
 export default Theme;
