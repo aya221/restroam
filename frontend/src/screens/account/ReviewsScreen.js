@@ -31,8 +31,8 @@ const ReviewsScreen = ({route, navigation}) => {
 
         const theme = useContext(ThemeContext);
     return (
-        <ScrollView>
-            <View style={{backgroundColor: theme.background}}>
+        <ScrollView style={{backgroundColor: theme.background}}>
+            <View>
            { reviews.map(({address, rating, description ,date}) => {
                 return (
                     <Review  title={address}

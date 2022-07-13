@@ -4,13 +4,14 @@ import { CheckBox } from "@rneui/base";
 import { TextInput } from 'react-native-paper';
 import ThemeContext from "../../darkMode/ThemeContext";
 
+import {getAsyncStorageItem} from "../../util";
+
+import axios from "axios";
+
+import { BACKEND_ENDPOINT_REPORTS } from '../../constants';
 
 
-const handleSubmit = ()=>{
-
-}
-
-const ReportsScreen = ({navigation}) => {
+const ReportsScreen = ({navigation,route}) => {
     const [notFound, setNotFound]=React.useState(false);
     const [clogged, setClogged]=React.useState(false);
     const [damaged, setDamaged]=React.useState(false);
@@ -18,6 +19,34 @@ const ReportsScreen = ({navigation}) => {
 
 
     const [text, onChangeText] = React.useState("");
+
+    const handleSubmit = () =>{
+        const {toilet} = route.params;
+        getAsyncStorageItem('token').then(
+            (tokenFromStorage) => {
+            //setToken(tokenFromStorage);
+            const complaints =(notFound ? `The toilet can no longer be found in its specified position.
+            ` : ``)+
+            (clogged ? `The toilet is clogged so that it is no longer usable.
+            ` : ``)+
+            (damaged ? `There are serious damages on the toilet that need to be repaired.
+            ` : ``)+
+            (dirty ? `The toilet is dirty that it requires substantial cleaning.` : ``);
+            axios.post(BACKEND_ENDPOINT_REPORTS+'sendReport', {
+                token: tokenFromStorage,
+                address: toilet.location,
+                issues: complaints,
+                description: text,
+                date:"date",
+            }).then(
+                () => navigation.navigate("ThankYou")
+    
+            ).catch(err => console.log("couldn't send report"))
+            //navigation.navigate("error occured")
+            })
+            .catch(err => console.log(err));
+    }
+    
     const theme = useContext(ThemeContext)
     return (
         <ScrollView style={{backgroundColor: theme.backgroundReports}}>

@@ -8,10 +8,10 @@ import ThemeContext from '../../darkMode/ThemeContext';
 
 const DropDown = ({ data }) => {
     const [options, setOptions] = useState(['Toilet1', 'Toilet2', 'Toilet3', 'Toilet4']);
-    const FilterList = ['Distance', 'Rating', 'Price'];
-    const [filter, setFilter] = useState('Distance');
+    const FilterList = ['distance', 'rating', 'price'];
+    const [filter, setFilter] = useState('distance');
     const [toilet, setToilet] = useState(null);
-    const Unit = { Distance: 'KM', Price: '€', Rating: '*' }
+    const Unit = { distance: 'KM', price: '€', rating: '*' }
     const dataTest = [
         {
             Name: 'Toilet1',
@@ -40,31 +40,34 @@ const DropDown = ({ data }) => {
     ]
     useEffect(() => {
         var newOptions = [];
-        dataTest.sort(function (a, b) {
-            return filter != 'Rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
+        data.sort(function (a, b) {
+            return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
         });
-        dataTest.forEach(d => {
-            newOptions.push(d['Name'] + " :" + d[filter] + Unit[filter])
+        data.forEach(d => {
+            newOptions.push(d['name'] + " :" + d[filter] + Unit[filter])
         })
         setOptions(newOptions)
     }, [filter])
+
+    const theme = useContext(ThemeContext)
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: theme.drop}]}>
             <ModalDropdown style={styles.drop} options={options} defaultValue='Toilet list' onSelect={(idx) => {
                 setToilet(options[idx])
             }} dropdownStyle={styles.down} showSearch={true} adjustFrame={(s) => {
             }} renderSearch={<TextInput style={styles.inputStyle} placeholder={'search...'} onChangeText={(value) => {
-                var newOptions1 = value == '' ? dataTest : dataTest.filter(o => o.Name.includes(value));
-                var newOptions2 = value == '' ? [] : dataTest.filter(o => !o.Name.includes(value));
+                var newOptions1 = value == '' ? data : data.filter(o => o.Name.includes(value));
+                var newOptions2 = value == '' ? [] : data.filter(o => !o.Name.includes(value));
                 newOptions1.sort(function (a, b) {
-                    return filter != 'Rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
+                    return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
                 });
                 newOptions2.sort(function (a, b) {
-                    return filter != 'Rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
+                    return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
                 });
                 var tmp = []
                 newOptions1.forEach(d => {
-                    tmp.push(d['Name'] + " :" + d[filter] + Unit[filter])
+                    tmp.push(d['name'] + " :" + d[filter] + Unit[filter])
                 })
                 newOptions2.forEach(d => {
                     tmp.push(d['Name'] + " :" + d[filter] + Unit[filter])
@@ -88,7 +91,6 @@ const styles = StyleSheet.create({
         top: 20,
         zIndex: 300,
         justifyContent: 'space-between',
-        backgroundColor: 'white',
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
@@ -99,18 +101,18 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingRight: 25,
         paddingLeft: 25,
-        padding: 3
+        padding: 3,
     },
     down: {
         width: 188,
         position: 'absolute',
         left: 112,
-        top: 101
+        top: 101,
     },
     inputStyle: {
         borderWidth: 0.5,
         fontSize: 10,
-        paddingLeft: 5
+        paddingLeft: 5,
     }
 }
 )

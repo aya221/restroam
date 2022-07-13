@@ -1,7 +1,7 @@
 // change url backend login api (on heroku)
 // for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
 
-const HOST_IP_ADDRESS = '192.168.1.100';
+const HOST_IP_ADDRESS = '192.168.1.114';
 const PORT_NR = '3000';
 
 const BACKEND_ENDPOINT_USERS    =   'http://' + HOST_IP_ADDRESS + ':' + PORT_NR + '/api/users/';

@@ -17,17 +17,32 @@ const TimeSlot = (props) => {
           Sun: false
         }
       )
-     
+
+      const [changedTime, setChangedTime] = useState(
+        {
+          startt: false,
+          endd: false
+        }
+      )
+      const arr = props.check;
       useEffect(() => {
-        
+        let tmp = {
+          start: text,
+          end: textEnd,
+          days: []
+        }
           Object.keys(dayIsChecked).forEach(k => {
-            if(dayIsChecked.k){
-              props.setData(k);
+            if(dayIsChecked[k]){
+              tmp.days.push(k);
             }
           })
-          console.log(props.data);
+          tmp.start = text;
+          tmp.end = textEnd;
+          
+          
+          props.setData(tmp);
       
-      },[dayIsChecked])
+      },[dayIsChecked, text, textEnd, changedTime])
 
       const theme = useContext(ThemeContext)
     
@@ -42,7 +57,7 @@ const TimeSlot = (props) => {
       const [modeEnd, setModeEnd] = useState('time');
       const [showEnd, setShowEnd] = useState(false);
       const [textEnd, setTextEnd] = useState("<Closing Hour>");
-    
+
       const padTo2Digits= (num)=> {
         return String(num).padStart(2, '0');
       }
@@ -53,7 +68,10 @@ const TimeSlot = (props) => {
         let tempDate = new Date(currentDate);
         let fDate = tempDate.getDate();
         let fTime = padTo2Digits(tempDate.getHours()) + ":" + padTo2Digits(tempDate.getMinutes());
-        setText(fTime); 
+        setText(fTime);
+        setChangedTime({...changedTime,
+                       startt: true
+                      }); 
         setShow(!show)
       }
     
@@ -64,6 +82,9 @@ const TimeSlot = (props) => {
         let fDate = tempDate.getDate();
         let fTime = padTo2Digits(tempDate.getHours()) + ":" + padTo2Digits(tempDate.getMinutes());
         setTextEnd(fTime); 
+        setChangedTime({...changedTime,
+          endd: true
+         }); 
         setShowEnd(!showEnd)
       }
     
@@ -107,7 +128,6 @@ const TimeSlot = (props) => {
                     is24Hour={true}
                     display="default"
                     onChange={onChange}
-                  
                   />
                 )}
             </View>
@@ -133,8 +153,6 @@ const TimeSlot = (props) => {
 
           </View>
 
-
-
           <View style={styles.entireCheckBox}>
             <View style={styles.checkboxes}>
                 <CheckBox  
@@ -148,6 +166,7 @@ const TimeSlot = (props) => {
                     Mon: !dayIsChecked.Mon
                   })
                   }
+
                 />
                 <CheckBox  
                   title="Tue"
@@ -160,7 +179,6 @@ const TimeSlot = (props) => {
                     Tue: !dayIsChecked.Tue
                   })
                   }
-                  
                 />
                 <CheckBox  
                   title="Wed"
@@ -172,6 +190,7 @@ const TimeSlot = (props) => {
                     ...dayIsChecked,
                     Wed: !dayIsChecked.Wed
                   })
+                  
                   
                   }
                 />
@@ -214,7 +233,10 @@ const TimeSlot = (props) => {
                   })
                   }
               />
-              <CheckBox  
+              
+              
+            </View>
+            <CheckBox  
                 title="Sun"
                 textStyle={{color: theme.color}}
                 containerStyle={{backgroundColor: theme.background}}  
@@ -226,13 +248,9 @@ const TimeSlot = (props) => {
                   })
                   }
               />
-              
-            </View>
             </View>
 
           </View>
-
-
     )
 };
 
@@ -311,13 +329,8 @@ const styles = StyleSheet.create({
       alignItems: "center",
       marginBottom: 20,
       paddingVertical: 9,
-      //borderBottomWidth: 2,
-      //shadowColor: "red"  
     },
     marginHours:{
       marginBottom: 3
     }
-
-
-
 })

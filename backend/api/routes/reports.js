@@ -47,6 +47,7 @@ router.post('/sendReport', jsonParser, async (req, res, next) => {
                         _id: new mongoose.Types.ObjectId(),
                         user: user.username,
                         address: req.body.address,
+                        issues: req.body.issues,
                         description: req.body.description,
                         date:req.body.date,
                     });

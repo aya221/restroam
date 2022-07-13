@@ -5,6 +5,9 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import StarRating from 'react-native-star-rating';
 import { TextInput } from 'react-native-paper';
 import ThemeContext from "../../darkMode/ThemeContext";
+import {getAsyncStorageItem} from "../../util";
+
+import axios from "axios";
 
 import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
 
@@ -32,15 +35,21 @@ const RatingToiletScreen = ({ route, navigation }) => {
     function changeDetails(v) {
         setText(v);
     }
+
+    // Average of all ratings
+    const total = parseFloat(((starCount1 + starCount2 + starCount3)/3).toFixed(2));
+
     const handleSubmit = () =>{
-        const {address} = route.params;
+        console.log(total);
+        const {toilet} = route.params;
+        console.log(toilet);
         console.log("inside review ");
         getAsyncStorageItem('token').then(
             (tokenFromStorage) => {
             //setToken(tokenFromStorage);
             axios.post(BACKEND_ENDPOINT_REVIEWS+'addReview', {
                 token: tokenFromStorage,
-                address: address,
+                address: toilet.location,
                 cleanliness:starCount1,
                 waitingtime:starCount2,
                 security:starCount3,
@@ -50,13 +59,11 @@ const RatingToiletScreen = ({ route, navigation }) => {
             }).then(
                 () => navigation.navigate("ThankYou")
 
-            ).catch(err => console.log("couldn't add toilet"))
+            ).catch(err => console.log("couldn't add review"))
             //navigation.navigate("error occured")
             })
             .catch(err => console.log(err));
     }
-    // Average of all ratings
-    const total = parseFloat(((starCount1 + starCount2 + starCount3)/3).toFixed(2));
 
     // Themes (Dark Mode / Default Mode)
     const theme = useContext(ThemeContext);

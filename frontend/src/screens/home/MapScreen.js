@@ -18,7 +18,6 @@ import { BACKEND_ENDPOINT_TOILETS } from '../../constants';
 
 
 export default function MapScreen({ navigation }) {
-    const [latlng, setLatLng] = useState({});
     const [position, setPosition] = useState(null);
     const [toiletsAround, setToiletsAround] = useState([{ latitude: 49.895685, longitude: 8.681163 },
     { latitude: 49.895975, longitude: 8.683416 },
@@ -53,6 +52,13 @@ export default function MapScreen({ navigation }) {
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.01,
             });
+            //console.log(pos.coords.latitude);
+            return {
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+            }
 
         }
         catch (err) {
@@ -62,14 +68,15 @@ export default function MapScreen({ navigation }) {
 
     const getToiletsAroundUser = async () => {
         console.log("heree");
-            console.log(position);
+        const p =await getLocation();
+            //console.log(position);
+
             axios.post(`${BACKEND_ENDPOINT_TOILETS}/nearestToilets`, {
-                latitude: position.latitude,
-                longitude: position.longitude
+                latitude: p.latitude,
+                longitude: p.longitude
             }).then(
                 ({ status, data }) => {
                     console.log(data.payload);
-                    //setToiletsAround({latitude:data.latitude, longitude:data.longitude});
                     setToiletsAround(data.payload);
                 }
             )
@@ -83,8 +90,6 @@ export default function MapScreen({ navigation }) {
 
     useEffect(() => {
         checkPermission();
-        getLocation();
-        getCurrentLocation();
         getToiletsAroundUser();
 
     }, [])
@@ -100,7 +105,25 @@ export default function MapScreen({ navigation }) {
     var item = {
         name: "toilet1",
         location: "kethastraße",
-        stars: 2.5,
+        rating: 2.5,
+        description: "very good",
+        openingHours: {
+            Monday: '10:00-17:00',
+            Tuesday: '10:00-17:00',
+            Wednesday: '10:00-17:00',
+            Thursday: '10:00-17:00',
+            Friday: '10:00-17:00',
+            Saturday: '10:00-17:00',
+            Sunday: '10:00-17:00',
+            
+        },
+    }
+
+    const [markerclicked, setMarkerlicked] = useState(false);
+    const [marker, setMarker] = useState({
+        name: "toilet1",
+        location: "kethastraße",
+        rating: 2.5,
         description: "very good",
         openingHours: {
             Monday: '10:00-17:00',
@@ -112,14 +135,13 @@ export default function MapScreen({ navigation }) {
             Sunday: '10:00-17:00',
         },
     }
-
-    const [markerclicked, setMarkerlicked] = useState(false);
-    const [marker, setMarker] = useState(null);
+);
     const [itemclicked, setItemclicked] = useState({});
     const [indexclicked, setIndexclicked] = useState(-1);
     const [vision, setVision] = useState(null);
 
     const markerClick = (item1, index) => {
+        console.log(item1);
         if (indexclicked == -1) {
             setMarkerlicked(!markerclicked);
             setIndexclicked(index);
@@ -143,25 +165,18 @@ export default function MapScreen({ navigation }) {
                 longitudeDelta: 0.01,
             })
         }
+        var found = toiletsAround.find(function (element) {
+            return element > 4;
+        });
         setMarker(item1);
         getToiletsAroundUser();
     }
 
-    async function getCurrentLocation() {
-        await Location.enableNetworkProviderAsync();
-        let pos = await Location.getCurrentPositionAsync({ highAccuracy: true });
-        setPosition({
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-        });
-    }
     const theme = useContext(ThemeContext);
     
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <DropDown></DropDown>
+            <DropDown data={toiletsAround}></DropDown>
             <MapView
                 ref={_map}
                 provider={PROVIDER_GOOGLE}
@@ -214,7 +229,8 @@ export default function MapScreen({ navigation }) {
                     </TouchableOpacity>
                 </View> */}
             {renderIf(markerclicked)(
-                <View style={styles.bottom}>
+                <View style={[styles.bottom, {backgroundColor: theme.background}]}>
+                    
                     <View style={{
                         display: 'flex',
                         flexDirection: 'row',
@@ -223,20 +239,20 @@ export default function MapScreen({ navigation }) {
                         <View style={{
                             width: '45%'
                         }}>
-                            <Text style={styles.title}>{item.name}</Text>
-                            <Text style={{ fontSize: 10 }}>{item.location}</Text>
+                            <Text style={[styles.title, {color: theme.icon}]}>{marker.name}</Text>
+                            <Text style={{ fontSize: 10, color: theme.color }}>{marker.location}</Text>
                             <View style={styles.stars}>
                                 <StarRating
                                     maxStars={5}
                                     disabled={true}
-                                    rating={item.stars}
+                                    rating={marker.rating}
                                     selectedStar={(rating) => { }}
                                     fullStarColor={"gold"}
                                     starSize={20}
                                 />
                             </View>
 
-                            <Text style={styles.item}>{item.description}</Text>
+                            <Text style={[styles.item, {color: theme.color}]}>{marker.description}</Text>
 
                             <View style={{
                                 display: 'flex',
@@ -248,7 +264,8 @@ export default function MapScreen({ navigation }) {
                                     display: 'flex',
                                     marginTop: '10%',
                                     alignItems: 'center',
-                                    borderWidth: 0.5,
+                                    borderWidth: 1,
+                                    borderColor: theme.icon,
                                     borderRadius: 10,
                                     padding: '2%',
                                     width: '32%'
@@ -286,56 +303,62 @@ export default function MapScreen({ navigation }) {
                                         longitudeDelta: (big[1] - small[1]) * 1.5,
                                     })
                                 }}>
-                                    <Icon name="walk" size={25} color={"black"} />
+                                    <Icon name="walk" size={25} color={theme.icon} />
                                     <Text style={{
-                                        fontSize: 7.5
+                                        fontSize: 7.5,
+                                        color: theme.icon
                                     }}>Directions</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     display: 'flex',
                                     marginTop: '10%',
                                     alignItems: 'center',
-                                    borderWidth: 0.5,
+                                    borderWidth: 1,
+                                    borderColor: theme.icon,
                                     borderRadius: 10,
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("Rating")
+                                    navigation.navigate("Rating",{toilet: marker})
                                 }
                                 }>
-                                    <Icon name="pencil-box-multiple" size={25} color={"black"} />
+                                    <Icon name="pencil-box-multiple" size={25} color={theme.icon} />
                                     <Text style={{
-                                        fontSize: 7.5
+                                        fontSize: 7.5,
+                                        color: theme.icon
                                     }}>Review</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     display: 'flex',
                                     marginTop: '10%',
                                     alignItems: 'center',
-                                    borderWidth: 0.5,
+                                    borderWidth: 1,
+                                    borderColor: theme.icon,
                                     borderRadius: 10,
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("WriteReport")
+                                    navigation.navigate("WriteReport",{toilet: marker})
                                 }
                                 }>
-                                    <Icon name="alert" size={25} color={"black"} />
+                                    <Icon name="alert" size={25} color={theme.icon} />
                                     <Text style={{
-                                        fontSize: 7.5
+                                        fontSize: 7.5,
+                                        color: theme.icon
                                     }}>Report</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
                         <View style={{
                             width: '50%',
-                            marginRight: '5%'
+                            marginRight: '5%',
                         }}>
                             <Text style={{
-                                fontWeight: 'bold'
+                                fontWeight: 'bold',
+                                color: theme.icon
                             }}>Opening Hours</Text>
                             {
-                                Object.entries(item.openingHours).map((key) => {
+                                Object.entries(marker.openingHours).map((key) => {
                                     return (<View style={{
                                         display: 'flex',
                                         flexDirection: 'row',
@@ -343,10 +366,10 @@ export default function MapScreen({ navigation }) {
                                         width: '100%',
                                         fontWeight: '20'
                                     }} key={key}>
-                                        <Text>
+                                        <Text style={{color: theme.color}}>
                                             {key[0] + ': '}
                                         </Text>
-                                        <Text>
+                                        <Text style={{color: theme.color}}>
                                             {key[1]}
                                         </Text>
                                     </View>)
@@ -356,8 +379,9 @@ export default function MapScreen({ navigation }) {
                     </View>
 
 
-
+                    
                 </View>)}
+                
         </View>
     )
 }
@@ -425,7 +449,7 @@ const styles = StyleSheet.create({
     },
     bottom: {
         position: 'absolute',
-        backgroundColor: "#fff",
+        //backgroundColor: "#fff",
         paddingBottom: 10,
         paddingTop: 10,
         paddingLeft: 25,

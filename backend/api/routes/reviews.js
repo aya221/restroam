@@ -9,7 +9,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const User = require('../models/user');
-const Review = require('../models/Review');
+const Review = require('../models/review');
 
 const jsonParser = bodyParser.json();
 const NodeGeocoder = require('node-geocoder');

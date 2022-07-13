@@ -1,3 +1,4 @@
+import "./ignoreWarnings";
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

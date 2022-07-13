@@ -1,4 +1,4 @@
-const { checkIfUserIsDeleted, countAverageRating } = require('./util');
+const { checkIfUserIsDeleted } = require('./util');
 
 const express = require('express');
 
@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 
 const User = require('../models/user');
 const Toilet = require('../models/toilet');
+const Review = require('../models/review');
 
 const jsonParser = bodyParser.json();
 const NodeGeocoder = require('node-geocoder');
@@ -159,6 +160,25 @@ function distance(lat1, lon1, lat2, lon2, unit) {
     if (unit == "N") { dist = dist * 0.8684 }
     return dist
 }
+const countAverageRating = async (toilet) => {
+    let reviewsTmp = await Review.find();
+    console.log(reviewsTmp);
+    let reviews = []
+    console.log(toilet.address);
+    reviewsTmp.forEach(rev => {
+
+        if (rev.address == toilet.address) reviews.push(rev);
+    });
+    console.log("rev");
+    console.log(reviews);
+    if (reviews.length <= 0) {
+        return 0;
+    }
+    const averageRating = reviews.reduce((a, b) => parseFloat(a) + parseFloat(b)) / reviews.length;
+    console.log("av" + averageRating);
+    return averageRating;
+
+};
 
 router.post('/nearestToilets', jsonParser, async (req, res, next) => {
     Toilet.find({})
@@ -167,27 +187,33 @@ router.post('/nearestToilets', jsonParser, async (req, res, next) => {
             let toilets = [];
             for (let i = 0; i < toilet.length; i++) {
                 entry = toilet[i];
-                console.log(entry);
                 const result = await geocoder.geocode(entry.address);
 
                 var dist = distance(result[0].latitude, result[0].longitude, req.body.latitude, req.body.longitude, 'K');
                 console.log(dist);
                 if (dist < 2) {
-                    //console.log(dist);
-                    //console.log(entry);
-                    // toilets.push(toilet_info);
                     const rate = await countAverageRating(entry);
 
-                    toilets.push({ toilet_details: entry, distance: dist, averageRating: rate, latitude: result[0].latitude, longitude: result[0].longitude });
+                    toilets.push({
+                        location: entry.address,
+                        price: entry.price,
+                        name: entry.name,
+                        handicapAccess: entry.handicapAccess,
+                        distance: dist,
+                        rating: rate,
+                        openingHours: entry.openingHours,
+                        description: entry.details,
+                        latitude: result[0].latitude,
+                        longitude: result[0].longitude
+                    });
 
                 }
-
+                console.log(toilets);
+                return res.status(200).json({
+                    message: 'Successfully retrieved toilets for current user.',
+                    payload: toilets
+                });
             }
-            console.log(toilets);
-            return res.status(200).json({
-                message: 'Successfully retrieved toilets for current user.',
-                payload: toilets
-            });
         })
         .catch(err => { return res.status(500).send("error occured!") });
 

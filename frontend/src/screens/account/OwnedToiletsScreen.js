@@ -93,8 +93,8 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
     const theme = useContext(ThemeContext);
 
     return (
-        <ScrollView>
-            <View style={[styles.container, { backgroundColor: theme.background }]}>
+        <ScrollView style={{ backgroundColor: theme.background }}>
+            <View style={[styles.container]}>
                 <View style={styles.toiletsWrapper}>
                     <Text style={[styles.headerText, { color: theme.color }]}>
                         Your Owned Toilets:
