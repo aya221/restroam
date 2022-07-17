@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -12,6 +12,16 @@ import axios from "axios";
 import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
 
 const RatingToiletScreen = ({ route, navigation }) => {
+
+    const [token, setToken] = useState();
+
+        useEffect(() => {
+            getAsyncStorageItem('token')
+            .then((tokenFromStorage) => {
+                if(tokenFromStorage == null) navigation.navigate("Not logged in");
+                else setToken(tokenFromStorage);
+            }).catch(err => console.log(err));
+        }, []);
     
     const {toilet} = route.params;
 
