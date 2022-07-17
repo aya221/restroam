@@ -18,6 +18,16 @@ const ReportsScreen = ({ navigation, route }) => {
     const [dirty, setDirty] = React.useState(false);
     const [content, setContent] = React.useState(false);
 
+    const [token, setToken] = useState();
+
+        useEffect(() => {
+            getAsyncStorageItem('token')
+            .then((tokenFromStorage) => {
+                if(tokenFromStorage == null) navigation.navigate("Not logged in");
+                else setToken(tokenFromStorage);
+            }).catch(err => console.log(err));
+        }, []);
+
 
     const [text, onChangeText] = React.useState("");
 
