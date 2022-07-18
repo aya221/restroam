@@ -20,8 +20,11 @@ const NodeGeocoder = require('node-geocoder');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../contants');
 
-const CORS = require('cors');
-router.use(CORS());
+if (process.env.MODE == 'DEVELOPMENT') {
+    const CORS = require('cors');
+    router.use(CORS());
+}
+
 const options = {
     provider: 'google',
 
@@ -44,7 +47,6 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
     // .catch(err => {res.status(400).json({ message: err.message });
     //                 return;})
     const result = await geocoder.geocode(address);
-    console.log(result);
     if (result.length <= 0) {
         return res.status(400).json({
             message: 'Invalid address! check for any mispellings'
@@ -112,29 +114,19 @@ router.post('/delete-toilet', jsonParser, async (req, res, next) => {
                 let allToiletReviews = await Review.find({ address: req.body.address });
 
                 let allToietReviewIds = allToiletReviews.map(rev => rev._id);
-                console.log('/delete-toilet---allToietReviewIds: ' + allToietReviewIds);
 
                 let allRevImages = await RevImage.find();
                 let imgs = []
 
                 allRevImages.forEach(img => {
-                    console.log('/delete-toilet---img.review_id: ' + img.review_id);
                     let test = false;
                     allToietReviewIds.forEach(revId => {
                         if ((img.review_id).toString() == (revId).toString()) {
                             test = true;
                         }
                     })
-                    console.log('/delete-toilet---test: ' + test);
-                    //if ((img.review_id).toString() == (review._id).toString()) imgs.push(img);
                     if (test) imgs.push(img);
                 });
-
-                console.log('imgs: ' + imgs.length);
-                // console.log('N:' + deleteRes.n);
-                // if (deleteRes.ok != 1) {
-                //     throw new Error('Smt went wrong delete revImgs');
-                // }
 
                 imgs.forEach(async (img) => {
                     await RevImage.deleteOne({ _id: img._id });
@@ -150,7 +142,9 @@ router.post('/delete-toilet', jsonParser, async (req, res, next) => {
             }
 
         })
-        .catch(err => console.log("error occured while deleting the toilet!"));
+        .catch(err => res.status(400).json({
+            message: err
+        }));
 
 });
 
@@ -179,7 +173,6 @@ router.post('/edit-toilet', jsonParser, async (req, res, next) => {
         });
     }
     catch (err) {
-        console.log("error occured while editing the toilet: " + err);
         return res.status(400).json({
             message: err,
         });
@@ -211,7 +204,6 @@ const countAverageRating = async (toilet) => {
         return 0;
     }
     const averageRating = reviews.reduce((a, b) => parseFloat(a) + parseFloat(b)) / reviews.length;
-    // console.log("av" + averageRating);
     return averageRating;
 
 };
@@ -226,7 +218,6 @@ router.post('/nearestToilets', jsonParser, async (req, res, next) => {
                 const result = await geocoder.geocode(entry.address);
 
                 var dist = distance(result[0].latitude, result[0].longitude, req.body.latitude, req.body.longitude, 'K');
-                console.log(dist);
                 if (dist < 2) {
                     const rate = await countAverageRating(entry);
 

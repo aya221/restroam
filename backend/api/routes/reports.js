@@ -16,13 +16,14 @@ const jsonParser = bodyParser.json();
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../contants');
 
-const CORS = require('cors');
-router.use(CORS());
+if (process.env.MODE == 'DEVELOPMENT') {
+    const CORS = require('cors');
+    router.use(CORS());
+}
 
 router.post('/sendReport', jsonParser, async (req, res, next) => {
     try {
         const token = req.body.token;
-        console.log(token);
         //if (!token)
           //  throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
@@ -54,13 +55,11 @@ router.post('/sendReport', jsonParser, async (req, res, next) => {
                     report
                         .save()
                         .then(result => {
-                            console.log(result);
                             return res.status(201).json({
                                 message: 'report sent successfully',
                             });
                         })
                         .catch(err => {
-                            console.log(err);
                             return res.status(500).json({
                                 message: err,
                             });

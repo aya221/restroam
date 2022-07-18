@@ -18,8 +18,12 @@ const NodeGeocoder = require('node-geocoder');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../contants');
 
-const CORS = require('cors');
-router.use(CORS());
+
+if (process.env.MODE == 'DEVELOPMENT') {
+    const CORS = require('cors');
+    router.use(CORS());
+}
+
 const options = {
     provider: 'google',
 
@@ -75,7 +79,6 @@ router.post('/addReview', jsonParser, async (req, res, next) => {
                             });
                         })
                         .catch(err => {
-                            console.log(err);
                             return res.status(500).json({
                                 message: err,
                             });
@@ -107,27 +110,13 @@ router.post('/deleteReview', jsonParser, async (req, res, next) => {
             .exec()
             .then(async (review) => {
                 if (review) {
-                    console.log(JSON.stringify(review));
-
-                    // here revImages shoudl also be deleted based on the _id of review because it references it that way
-                    // but theres a problem with the code below.
-
-                    console.log('revId: ' + review._id);
                     // let deleteRes = await RevImage.deleteMany({ review_id: new mongoose.Types.ObjectId(review._id) });
                     let allRevImages = await RevImage.find();
                     let imgs = []
 
                     allRevImages.forEach(img => {
-                        console.log(img.review_id);
-                        console.log(review._id);
                         if ((img.review_id).toString() == (review._id).toString()) imgs.push(img);
                     });
-
-                    console.log('imgs: ' + imgs.length);
-                    // console.log('N:' + deleteRes.n);
-                    // if (deleteRes.ok != 1) {
-                    //     throw new Error('Smt went wrong delete revImgs');
-                    // }
 
                     imgs.forEach(async (img) => {
                         await RevImage.deleteOne({ _id: img._id });

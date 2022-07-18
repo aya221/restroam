@@ -11,18 +11,13 @@ const jsonParser = bodyParser.json();
 
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        console.log('before callback in destination');
         cb(null, 'uploads/toilet_images');
-        console.log('after callback in destination');
     },
     filename: function (req, file, cb) {
-        console.log('file: ' + JSON.stringify(file));
         let withoutExtension = file.originalname.split('.');
         let fileExt = withoutExtension.pop();
         withoutExtension = withoutExtension.join('.');
-        console.log('withoutExtension: ' + withoutExtension);
         cb(null, withoutExtension + '-' + Date.now() + '.' + fileExt);
-        console.log('finished callback in filename');
     }
 });
 
@@ -68,35 +63,24 @@ const uploadFivePhoto = upload.array("photos", 5);
 // Upload image
 router.post('/upload-files', jsonParser, function (req, res, next) {
 
-    console.log('before upload');
-
     uploadFivePhoto(req, res, function (err) {
-
-        console.log('after upload');
 
         if (err instanceof multer.MulterError) {
             console.log('Multer Error');
         } else {
             let { toiletAddr } = req.body;
-
-            console.log(JSON.stringify(req.body));
             if (!toiletAddr) {
-                console.log('error in toiletAddr');
                 return res.status(400).json({
                     message: 'Please make sure to pass in the body as form data toiletAddr property.'
                 });
             }
-
-            console.log(req.files);
+            
             let _fs = req.files;
             if (_fs == undefined || _fs == null) {
                 return res.status(400).json({
                     message: 'Please make sure to pass in a file as part of form data.'
                 });
             }
-
-            console.log('_fs is not undefined');
-
             let dbImages = []
             _fs.forEach(_f => {
                 let newImage = {
@@ -111,12 +95,9 @@ router.post('/upload-files', jsonParser, function (req, res, next) {
                 dbImages.push(newImage);
             });
 
-            console.log('after foreach');
-
             Image.insertMany(dbImages, function (err) {
 
                 if (err) {
-                    console.log('err: ' + err);
                     return res.status(400).json({
                         message: err
                     });

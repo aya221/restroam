@@ -1,13 +1,17 @@
 {
-  "name": "backend",
+  "name": "iptk22-restroam-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "The backend for the android app developed in context of internet telecooperation project summer term 2022 at TU Darmstadt",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Aya Chemingui, Ahmed Fourati, Aziz Cheikh, Idris Babay, Jan Cramer, Manuel Streicher",
   "license": "ISC",
+  "engines": {
+    "node": "16.x"
+  },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",

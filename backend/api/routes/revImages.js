@@ -14,7 +14,6 @@ let storage = multer.diskStorage({
         cb(null, 'uploads/rev_images');
     },
     filename: function (req, file, cb) {
-        console.log('file: ' + JSON.stringify(file));
         let withoutExtension = file.originalname.split('.');
         let fileExt = withoutExtension.pop();
         withoutExtension = withoutExtension.join('.');
@@ -71,15 +70,11 @@ router.post('/upload-files', jsonParser, function (req, res, next) {
             console.log('Multer Error');
         } else {
             let { revId } = req.body;
-
-            console.log(req.body);
             if (!revId) {
                 return res.status(400).json({
                     message: 'Please make sure to pass in the body as form data revId property.'
                 });
             }
-
-            console.log(req.files);
             let _fs = req.files;
             if (_fs == undefined || _fs == null) {
                 return res.status(400).json({
@@ -104,7 +99,6 @@ router.post('/upload-files', jsonParser, function (req, res, next) {
             RevImage.insertMany(dbImages, function (err) {
 
                 if (err) {
-                    console.log('err: ' + err);
                     return res.status(400).json({
                         message: err
                     });

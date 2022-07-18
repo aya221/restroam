@@ -43,7 +43,6 @@ const nodeMailerTestASync = async () => {
         if (error) {
             console.log(error);
         } else {
-            console.log('Ready for messages');
             console.log(success);
         }
     });
@@ -53,9 +52,6 @@ const nodeMailerTestASync = async () => {
         subject: 'testing NodeJS Application',
         text: 'testing NodeJS Application',
     });
-
-    console.log('Message Sent: %s', info.messageId);
-    console.log('Preview Url: %s', nodemailer.getTestMessageUrl(info));
 };
 
 //nodeMailerTestASync().catch(console.error);
@@ -153,7 +149,6 @@ router.post('/signup', jsonParser, async (req, res, next) => {
                                             user
                                                 .save()
                                                 .then(result => {
-                                                    console.log(result);
                                                     return res.status(201).json({
                                                         message: 'User Created.',
                                                     });
@@ -166,7 +161,6 @@ router.post('/signup', jsonParser, async (req, res, next) => {
                 }
             })
     } catch (err) {
-        console.log(err);
         return res.status(500).json({
             message: err,
         });
@@ -235,7 +229,6 @@ router.post('/change-password', jsonParser, async (req, res, next) => {
 router.post('/get-user-data', jsonParser, async (req, res, next) => {
     try {
         const { token } = req.body;
-        console.log(token);
         if (!token)
             throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);

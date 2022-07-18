@@ -1,15 +1,18 @@
 //require('dotenv').config();
 
 const express = require("express");
-const CORS = require('cors');
 const mongoose = require('mongoose');
 const apiRoutes = require('./api/api');
 
 const app = new express();
-app.use(CORS());
+
+if (process.env.MODE == 'DEVELOPMENT') {
+    const CORS = require('cors');
+    app.use(CORS());
+}
 app.set('view engine', 'ejs');
 
-const port = 3000;
+const port = process.env.PORT;
 
 const clusterUsername = 'groupJ';
 const clusterPassword = 'SbPotmFKy5V8tyBF';
@@ -20,7 +23,7 @@ mongoose.connect(
 );
 
 const db = mongoose.connection;
-db.on('error', () => {console.log('Connection error')});
+db.on('error', () => { console.log('Connection error') });
 db.once("open", function () {
     console.log("Connected successfully");
 });
